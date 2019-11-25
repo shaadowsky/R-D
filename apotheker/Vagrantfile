@@ -50,6 +50,10 @@ Vagrant.configure("2") do |config|
             yum update -y
             yum install nano epel-release -y
             yum install docker -y
+            #https://hub.docker.com/_/mysql
+            docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+            #https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql/
+            docker run --name some-zabbix-web-nginx-mysql -e DB_SERVER_HOST="some-mysql-server" -e MYSQL_USER="some-user" -e MYSQL_PASSWORD="some-password" -e ZBX_SERVER_HOST="some-zabbix-server" -e PHP_TZ="some-timezone" -d zabbix/zabbix-web-nginx-mysql:tag
 
 
 
