@@ -1,0 +1,24 @@
+
+[client]
+port            = 3306
+socket          = /var/lib/mysql/mysql.sock
+default-character-set=utf8
+
+[mysqld]
+port            = 3306
+socket          = /var/lib/mysql/mysql.sock
+
+innodb_file_per_table=1
+innodb_buffer_pool_size = 768M # Значение зависит от ОЗУ, доп-но можно почитать оф. докуменатацию. Рекомендуется выставлять не более 50-70% от ОЗУ. Если на сервере 2 Гб, то рекомендуемое значение будет 1Gb или 768М.
+innodb_buffer_pool_instances=1 # Значение увеличивать с каждым новым гигабайтом innodb_buffer_pool_size
+innodb_buffer_pool_size
+innodb_flush_log_at_trx_commit = 0
+innodb_log_file_size = 512M
+
+# Character
+
+character-set-server = utf8
+collation-server = utf8_unicode_ci
+init_connect="SET collation_connection = utf8_unicode_ci"
+
+log_error=/var/log/mysql/mysql_error.log
