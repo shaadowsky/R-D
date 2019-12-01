@@ -24,7 +24,7 @@ Vagrant.configure("2") do |config|
         box.vm.host_name = boxname.to_s
 
         config.vm.provider "virtualbox" do |v|
-          v.memory = 2048
+          v.memory = 4096
         end
 
         boxconfig[:net].each do |ipconf|
@@ -44,16 +44,27 @@ Vagrant.configure("2") do |config|
           when "test"
             box.vm.provision "shell", run: "always", inline: <<-SHELL
             setenforce 0
-            sed -i 's/SELINUX=enforcing/SELINUX=permissive/g'
+            sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config 
             sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
             service sshd restart
             yum update -y
             yum install nano epel-release -y
-            yum install docker -y
+            yum install docker docker-compose -y
+            systemctl start docker
+            systemctl enable docker
+            docker network create --subnet=10.6.0.0/24 --driver=bridge zabbix-net
+#            docker pull zabbix/zabbix-server-mysql:centos-4.2.1
+#            docker pull zabbix/zabbix-web-nginx-mysql:centos-4.2.1
+#            docker pull mysql:5.7.26
+
+            #для сервера заббикса
+#            container_name=zab-mysql
+#            mkdir -p /storage/${container_name}/data && mkdir /storage/${container_name}/config
             #https://hub.docker.com/_/mysql
-            docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+            #в откртом виде передавать пароли - стрёмное дело. В продакшн случае можно упаковать или в файл или в секреты гитхаба/волта
+#            docker run --name mysql -e MYSQL_ROOT_PASSWORD=mysql -d mysql:5.6            
             #https://hub.docker.com/r/zabbix/zabbix-web-nginx-mysql/
-            docker run --name some-zabbix-web-nginx-mysql -e DB_SERVER_HOST="some-mysql-server" -e MYSQL_USER="some-user" -e MYSQL_PASSWORD="some-password" -e ZBX_SERVER_HOST="some-zabbix-server" -e PHP_TZ="some-timezone" -d zabbix/zabbix-web-nginx-mysql:tag
+            #docker run --name some-zabbix-web-nginx-mysql -e DB_SERVER_HOST="some-mysql-server" -e MYSQL_USER="some-user" -e MYSQL_PASSWORD="some-password" -e ZBX_SERVER_HOST="some-zabbix-server" -e PHP_TZ="some-timezone" -d zabbix/zabbix-web-nginx-mysql:tag
 
 
 
