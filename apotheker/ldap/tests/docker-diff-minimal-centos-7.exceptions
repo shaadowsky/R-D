@@ -1,0 +1,2 @@
+# Older systemd-tmpfiles recreated files even if they existed.
+^C /var/log/[bw]tmp$
