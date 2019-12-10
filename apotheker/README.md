@@ -9,7 +9,11 @@ docker-compose
 выполнено на основе базового образа centos:centos7. В production среде смотрел бы в сторону ,базового образа alpine. Дело в том, что alpine 5.5M, а centos7 203M
 
 freeipa взята отсюда https://github.com/Tiboris/freeipa-container
+заббикс взят отсюда https://github.com/zabbix/zabbix-docker/tree/4.4/zabbix-appliance/centos
 
+много времени убил на freeipa. Вспомнил, что ldap'ом может рулить webmin
+
+на данный момент не написан докер-композ и крашится при установке freeipa
 
 
     yum -y upgrade 
@@ -27,7 +31,7 @@ freeipa взята отсюда https://github.com/Tiboris/freeipa-container
     #Create directory which will hold the server data:
     mkdir /var/lib/ipa-data
     
-    #для систем, которые умеют в  oci-systemd-hook
+    #для систем, которые умеют в  oci-systemd-hook (центоос 8 должен уметь)
     docker run --name freeipa-server-container -ti \
         -h ipa.example.test \
         --read-only \
