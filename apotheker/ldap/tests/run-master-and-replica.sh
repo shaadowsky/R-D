@@ -135,6 +135,25 @@ uuidgen | sudo tee /tmp/freeipa-test-$$/data/build-id
 sudo touch -r /tmp/freeipa-test-$$/data/build-id.initial /tmp/freeipa-test-$$/data/build-id
 run_ipa_container $IMAGE freeipa-master
 
+# Wait for the services to start to the point when SSSD is operational
+for i in $( seq 1 20 ) ; do
+	if $docker exec freeipa-master id admin 2> /dev/null ; then
+		break
+	fi
+	if [ "$((i % 5))" == 1 ] ; then
+		echo "Waiting for SSSD in the container to start ..."
+	fi
+	sleep 5
+done
+(
+set -x
+$docker exec freeipa-master bash -c 'echo Secret123 | kinit admin'
+$docker exec freeipa-master ipa user-add --first Bob --last Nowak bob
+$docker exec freeipa-master id bob
+
+$docker exec freeipa-master ipa-adtrust-install -a Secret123 --netbios-name=EXAMPLE -U
+)
+
 if [ "$replica" = 'none' ] ; then
 	echo OK $0.
 	exit
