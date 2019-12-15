@@ -1,4 +1,4 @@
-FROM centos:centos7 as builder
+FROM  registry.centos.org/centos:7 AS builder
 
 ARG YUM_FLAGS_COMMON="-y"
 ARG YUM_FLAGS_DEV="${YUM_FLAGS_COMMON}"

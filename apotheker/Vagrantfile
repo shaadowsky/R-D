@@ -7,6 +7,7 @@ MACHINES = {
     
     :test => {
         :box_name => "centos/7",
+        :box_version => "1905.1",
         #:public => {:ip => '10.10.10.1', :adapter => 1},
         :net => [
                    {ip: '192.168.130.1', adapter: 2, netmask: "255.255.255.240", virtualbox__intnet: "router-net"},
@@ -47,15 +48,22 @@ Vagrant.configure("2") do |config|
             sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config 
             sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
             service sshd restart
-            yum update -y
+            yum upgrade -y
             yum install nano epel-release -y
-            yum install docker docker-compose -y
+            curl -fsSL https://get.docker.com/ | sh
+            yum install docker-compose -y
+            yum autoremove -y
             systemctl start docker
             systemctl enable docker
-            docker network create --subnet=10.6.0.0/24 --driver=bridge zabbix-net
+#            docker network create --subnet=10.6.0.0/24 --driver=bridge zabbix-net
 #            docker pull zabbix/zabbix-server-mysql:centos-4.2.1
 #            docker pull zabbix/zabbix-web-nginx-mysql:centos-4.2.1
 #            docker pull mysql:5.7.26
+            cp -r /vagrant/* /root
+            cd /root/ldap
+            docker build -t freeipa-server .
+            cd /root/zabbix
+            docker build -t zabbix-appliance .
 
             #для сервера заббикса
 #            container_name=zab-mysql
