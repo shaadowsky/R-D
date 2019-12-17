@@ -42,6 +42,8 @@ RUN echo 0123456789abcdef0000000000000000 > /etc/machine-id && systemd-tmpfiles 
 # test-addon: VOLUME [ "/var/log/journal" ]
 # test: systemd-container-diff.sh list-dependencies-centos-7.out docker-diff-minimal-centos-7.exceptions docker-diff-minimal-centos-7.out
 
+RUN echo -e 'net.ipv4.conf.all.forwarding=1\nnet.ipv4.ip_forward=1' >> /etc/sysctl.conf
+
 # Prepare for basic ipa-server-install in container
 # Address failing rhel-domainname.service in the ipa-client-install step
 RUN mv /usr/bin/domainname /usr/bin/domainname.orig
@@ -82,6 +84,8 @@ COPY exit-via-chroot.conf /usr/lib/systemd/system/systemd-poweroff.service.d/
 EXPOSE 53/udp 53 80 443 389 636 88 464 88/udp 464/udp 123/udp
 
 RUN uuidgen > /data-template/build-id
+
+
 
 # Invocation:
 # docker run -ti -v /sys/fs/cgroup:/sys/fs/cgroup:ro --tmpfs /run --tmpfs /tmp -v /opt/ipa-data:/data:Z -h ipa.example.test ${NAME} [ options ]
