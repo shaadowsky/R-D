@@ -19,4 +19,4 @@ freeipa взята отсюда https://github.com/Tiboris/freeipa-container
 подставить костыль sudo chown vagrant:docker /var/run/docker.sock
 потом докер-композ
 
-docker run --name freeipa -ti    -h ipa.example.test    -v /sys/fs/cgroup:/sys/fs/cgroup:ro    --tmpfs /run --tmpfs /tmp  -v /var/lib/ipa-data:/data:Z   freeipa-server
+docker run --sysctl net.ipv6.conf.lo.disable_ipv6=0 --rm  --name freeipa -ti  -e IPA_SERVER_IP=10.12.0.98 -p 53:53/udp -p 53:53 -p 80:80 -p 443:443 -p 389:389 -p 636:636 -p 88:88 -p 464:464 -p 88:88/udp -p 464:464/udp -p 123:123/udp  -h ipa.example.test    -v /sys/fs/cgroup:/sys/fs/cgroup:ro    --tmpfs /run --tmpfs /tmp  -v /var/lib/ipa-data:/data:Z   freeipa-server exit-on-finished

@@ -61,11 +61,15 @@ Vagrant.configure("2") do |config|
             systemctl start docker
             systemctl enable docker
 
+            echo -e '{"ipv6": true}' >> /etc/docker/daemon.conf
+            systemctl reload docker
+            
             #разрешаем пользователю vagrant запускать контейнеры
             usermod -aG docker $(whoami)
 
             # для фриипы
             mkdir /var/lib/ipa-data
+            cp /vagrant/ipa-server-install-options /var/lib/ipa-data/
 
 # собираем образа контейнеров
             cp -r /vagrant/* /root
