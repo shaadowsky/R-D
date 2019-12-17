@@ -50,15 +50,19 @@ Vagrant.configure("2") do |config|
             service sshd restart
             yum upgrade -y
             yum install nano epel-release -y
-            curl -fsSL https://get.docker.com/ | sh
-            yum install docker-compose -y
-            yum autoremove -y
+
+            #ставим docker-ce
+            yum install -y yum-utils device-mapper-persistent-data lvm2
+            yum-config-manager -y --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+            yum install docker-ce docker-ce-cli containerd.io -y
+            yum install  docker-compose -y
             systemctl start docker
             systemctl enable docker
-#            docker network create --subnet=10.6.0.0/24 --driver=bridge zabbix-net
-#            docker pull zabbix/zabbix-server-mysql:centos-4.2.1
-#            docker pull zabbix/zabbix-web-nginx-mysql:centos-4.2.1
-#            docker pull mysql:5.7.26
+
+            #разрешаем пользователю vagrant запускать контейнеры
+            usermod -aG docker vagrant
+
+# собираем образа контейнеров
             cp -r /vagrant/* /root
             cd /root/ldap
             docker build -t freeipa-server .
