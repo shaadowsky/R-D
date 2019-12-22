@@ -22,7 +22,32 @@
 б) (быстрый) в панели VMmanager нажать кнопку "пароль" и задать новый
 2.2.1. на медленной vm практически в два раза ниже IOPS, а также выше latency (ожидание)
 2.2.2. при одинаковом хранилище для дисков, одинаковом весе использования io что-то режет IOPS. Скорее всего это из-за созданного снэпшота на VM qtestvm.
-2.3. 
+upd. снэпшот убрал, теперь 14,7MiB/s read, 12.2MiB/s write на медленной, 26,6MiB/s read, 18,7MiB/s write на быстрой. чем-то еще различается.
+2.3. диск qtestvm до удаления снэпшота занимал 8.6 Гб, это связано с особенностями хранения в формате qcow2. При хранении в формате raw диск занимал бы ровно столько места, сколько нарезано для VM.
+
+    root@test ~# qemu-img info /vm/qtestvm
+    image: /vm/qtestvm
+    file format: qcow2
+    virtual size: 9.8G (10485760000 bytes)
+    disk size: 8.6G
+    cluster_size: 65536
+    Snapshot list:
+    ID        TAG                 VM SIZE                DATE       VM CLOCK
+    1         test1                  585M 2019-12-18 17:26:07   00:13:06.779
+    Format specific information:
+        compat: 0.10
+        refcount bits: 16
+
+    root@test ~# qemu-img info /vm/qtestvm.speed 
+    image: /vm/qtestvm.speed
+    file format: qcow2
+    virtual size: 9.8G (10485760000 bytes)
+    disk size: 3.6G
+    cluster_size: 65536
+    Format specific information:
+        compat: 0.10
+        refcount bits: 16
+
 
 
 
