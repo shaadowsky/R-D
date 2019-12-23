@@ -8,3 +8,6 @@ docker-compose
 
 выполнено на основе [инструкции](https://github.com/osixia/docker-phpLDAPadmin)
 
+необходимо запустить скрипт [ldap+ldapadmin.sh](ldap+ldapadmin.sh), будет показан адрес, логин и пароль
+
+проверено на убунту 18.04.3 LTS
