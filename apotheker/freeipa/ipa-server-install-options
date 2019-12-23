@@ -1,5 +1,0 @@
--e PASSWORD=!QAZ1qaz
---realm=EXAMPLE.TEST
---ds-password=!QAZ1qaz
---admin-password=!QAZ1qaz
---no-ntp

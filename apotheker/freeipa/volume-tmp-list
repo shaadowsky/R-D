@@ -1,7 +1,0 @@
-/root/.cache/
-/root/.ipa_cache
-/root/.ipa/log/
-/var/lib/certmonger/
-/var/lib/gssproxy/
-/var/lib/chrony/
-/var/tmp/
