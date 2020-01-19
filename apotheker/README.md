@@ -1,7 +1,7 @@
 с нуля выполнить установку и настройку небольшой среды для разработки/отладки серверного ПО: Centos/Debian, Docker CE, в контейнерах разместить ldap, zabbix, настроить домен, выполнить начальное обнаружение устройств и проверку доступности домена.
 
 ### prerequisites
-docker-ce
+docker-ce docker-ce-cli containerd.io
 
 ### описание
 
@@ -11,3 +11,15 @@ docker-ce
 
 проверено на убунту 18.04.3 LTS
 
+apt update && apt upgrade
+apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+apt update
+apt install docker-ce docker-ce-cli containerd.io
+
+# as in https://docs.docker.com/compose/install/
+
+sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose

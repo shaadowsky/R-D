@@ -1,0 +1,85 @@
+version: '3.7'
+
+services:
+  ldap:
+    container_name: ldap
+    image: osixia/openldap:1.1.8
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.10
+    
+  ldapadmin:
+    container_name: ldapadmin
+    image: osixia/phpldapadmin:0.9.0
+    depends_on:
+      - 'ldap'
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.20
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=ldap-host
+    ports:
+      - '81:80'
+
+  mysql-server:
+    container_name: mysql-server
+    image: mysql:latest
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.30
+    environment:
+      - MYSQL_DATABASE="zabbix"
+      - MYSQL_USER="zabbix"
+      - MYSQL_PASSWORD="zabbix"
+      - MYSQL_ROOT_PASSWORD="root"
+    volumes:
+      - ./mysql-server/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    ports:
+      - '3306:3306'
+      - '33060:33060'
+
+  zabbix-server:
+    container_name: zabbix-server
+    image: zabbix/zabbix-server-mysql:alpine-4.4.4
+    depends_on:
+      - 'mysql-server'
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.40
+    environment:
+      - DB_SERVER_HOST="172.16.238.30"
+      - MYSQL_PORT="33060"
+      - MYSQL_DATABASE="zabbix"
+      - MYSQL_USER="zabbix"
+      - MYSQL_PASSWORD="zabbix"
+      - MYSQL_ROOT_PASSWORD="root"
+    restart: on-failure
+    ports:
+      - '10051:10051'
+
+  zabbix-web:
+    container_name: zabbix-web
+    image: zabbix/zabbix-web-apache-mysql:alpine-4.4.4
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.50
+    depends_on:
+      - 'mysql-server'
+      - 'zabbix-server'
+    environment:
+      - DB_SERVER_HOST="172.16.238.30"
+      - MYSQL_USER="zabbix"
+      - MYSQL_PASSWORD="zabbix"
+      - ZBX_SERVER_HOST="172.16.238.40"
+      - ZBX_SERVER_NAME="MyZabbix"
+      - PHP_TZ="Asia/Irkutsk"
+    restart: on-failure
+    ports:
+      - '80:80'
+
+networks:
+  app_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/25"
