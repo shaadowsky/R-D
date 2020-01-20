@@ -11,18 +11,19 @@ docker-ce docker-ce-cli containerd.io
 
 проверено на убунту 18.04.3 LTS
 
-apt update && apt upgrade
-apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-apt update
-apt install docker-ce docker-ce-cli containerd.io
+на чистом сервере выполнить 
+    # apt update && apt upgrade
+    # apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+    # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    # add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    # apt update
+    # apt install docker-ce docker-ce-cli containerd.io
 
-# as in https://docs.docker.com/compose/install/
+    ### as in https://docs.docker.com/compose/install/
 
-sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+    # sudo curl -L "https://github.com/docker/compose/releases/download/1.25.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    # chmod +x /usr/local/bin/docker-compose
+    # ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
 
 при локальной установке в браузере
 172.16.238.50 логин Admin, пароль zabbix
