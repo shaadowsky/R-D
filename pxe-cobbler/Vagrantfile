@@ -33,7 +33,7 @@ Vagrant.configure(2) do |config|
             mkdir -p ~root/.ssh
             cp ~vagrant/.ssh/auth* ~root/.ssh
             sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-            sed -i 's/SELINUX=enforcing/SELINUX=permissive/g' /etc/selinux/config
+            sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
             setenforce 0
             reboot now
             yum install -y epel-release
@@ -55,6 +55,26 @@ Vagrant.configure(2) do |config|
             firewall-cmd --reload
             cp /etc/cobbler/settings{,.orig} 
             cp /vagrant/conf/cobbler/* /etc/cobbler/
+            cobbler get-loaders
+            sed -i "s/^@dists/#@dists/" /etc/debmirror.conf
+            sed -i "s/^@arches/#@arches/" /etc/debmirror.conf
+            yum install -y fence-agents 
+            systemctl restart cobblerd
+            cobbler sync
+
+            # проверяем корректность настроек
+            # cobbler check
+            # должно быть:
+            # No configuration problems found.  All systems go.
+
+            ### подтягиваем ОС
+            wget https://mirror.yandex.ru/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+            mkdir /mnt/centos7 
+            mount -t iso9660 -o loop,ro /tmp/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos7
+#            mkdir /mnt/centos8
+#            wget http://mirror.logol.ru/centos/8.1.1911/isos/x86_64/CentOS-8.1.1911-x86_64-boot.iso
+#            mount -t iso9660 -o loop,ro /tmp/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos8
+            cobbler import --arch=x86_64 --path=/mnt/centos7 --name=CentOS7
 
             SHELL
   

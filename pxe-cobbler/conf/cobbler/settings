@@ -6,9 +6,7 @@ manage_dhcp: 1
 manage_dns: 1
 pxe_just_once: 1
 next_server: 192.168.20.10
-next_server: 127.0.0.1
 server: 192.168.20.10
-server: 127.0.0.1
 pxe_just_once: 0
 ####
 
