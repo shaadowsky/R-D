@@ -2,7 +2,6 @@
 # vim: set ft=ruby :
 home = ENV['HOME']
 ENV["LC_ALL"] = "en_US.UTF-8"
-Vagrant.require_plugin "vagrant-reload"
 
 MACHINES = {
 
@@ -12,7 +11,7 @@ MACHINES = {
         :box_check_update => "false",
         :ip_addr => '192.168.20.10'
         },
-	}
+    }
 
 Vagrant.configure(2) do |config|
 
@@ -45,7 +44,8 @@ Vagrant.configure(2) do |config|
 #        config.vm.provision "shell", inline: <<-SHELL
 #            setenfoce 0 
             yum install -y epel-release
-            yum update -y
+#            yum update -y
+            yum makecache
             yum install -y cobbler cobbler-web dnsmasq syslinux pykickstart xinetd httpd dhcp debmirror pykickstart bind wget
             systemctl enable --now cobblerd
             systemctl enable --now httpd
@@ -53,14 +53,15 @@ Vagrant.configure(2) do |config|
             systemctl enable --now rsyncd
             cp /vagrant/conf/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf
             systemctl enable --now dhcpd
-            systemctl enable --now firewalld.service
-            firewall-cmd --add-port=80/tcp --permanent
-            firewall-cmd --add-port=443/tcp --permanent
-            firewall-cmd --add-service=dhcp --permanent
-            firewall-cmd --add-port=69/tcp --permanent
-            firewall-cmd --add-port=69/udp --permanent
-            firewall-cmd --add-port=4011/udp --permanent
-            firewall-cmd --reload
+#            systemctl enable --now firewalld.service
+            systemctl enable --now tftp.service
+#            firewall-cmd --add-port=80/tcp --permanent
+#            firewall-cmd --add-port=443/tcp --permanent
+#            firewall-cmd --add-service=dhcp --permanent
+#            firewall-cmd --add-port=69/tcp --permanent
+#            firewall-cmd --add-port=69/udp --permanent
+#            firewall-cmd --add-port=4011/udp --permanent
+#            firewall-cmd --reload
             cp /etc/cobbler/settings{,.orig} 
             cp /vagrant/conf/cobbler/* /etc/cobbler/
             cobbler get-loaders
@@ -69,6 +70,7 @@ Vagrant.configure(2) do |config|
             yum install -y fence-agents 
             systemctl restart cobblerd
             cobbler sync
+            cobbler check
 
             # проверяем корректность настроек
             # cobbler check
@@ -76,16 +78,18 @@ Vagrant.configure(2) do |config|
             # No configuration problems found.  All systems go.
 
             ### подтягиваем ОС
-            wget https://mirror.yandex.ru/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+#            wget https://mirror.yandex.ru/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
             mkdir /mnt/centos7 
-            mount -t iso9660 -o loop,ro /tmp/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos7
+            mount -t iso9660 -o loop,ro /vagrant/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos7
+            cp /vagrant/kickstarts/* /var/lib/cobbler/kickstarts/
+#            cobbler import --arch=x86_64 --path=/mnt/centos7 --name=CentOS7
+#            cobbler profile edit --name=CentOS7-x86_64 --kickstart=/var/lib/cobbler/kickstarts/CentOS7.ks
 #            mkdir /mnt/centos8
 #            wget http://mirror.logol.ru/centos/8.1.1911/isos/x86_64/CentOS-8.1.1911-x86_64-boot.iso
 #            mount -t iso9660 -o loop,ro /tmp/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos8
-            cobbler import --arch=x86_64 --path=/mnt/centos7 --name=CentOS7
-            cp /vagrant/kickstarts/ /var/lib/cobbler/kickstarts/
-            cobbler profile edit --name=CentOS7-x86_64 --kickstart=/var/lib/cobbler/kickstarts/CentOS7.ks
-            cobbler sync
+            
+#            cobbler profile edit --name=CentOS7-x86_64 
+#            cobbler sync
 
 
             SHELL

@@ -1,8 +1,9 @@
 стенд поднят на centos7  и cobbler 2.8.5
 
-требуется выполнить установку плагина для вагранта
+требуется подложить в корневую директорию образ центос 7
 
-    # vagrant plugin install vagrant-reload
+    # wget https://mirror.yandex.ru/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+
     
 pxe-сервер доступен тут (_login cobbler, pass cobbler_):
 
