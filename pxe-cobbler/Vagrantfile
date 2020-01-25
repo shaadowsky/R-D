@@ -68,17 +68,16 @@ Vagrant.configure(2) do |config|
             sed -i "s/^@dists/#@dists/" /etc/debmirror.conf
             sed -i "s/^@arches/#@arches/" /etc/debmirror.conf
             yum install -y fence-agents 
-            systemctl restart cobblerd
-            cobbler sync
-            cobbler check
         SHELL
         
         config.vm.provision :reload
 
         box.vm.provision "shell", inline: <<-SHELL
+            systemctl restart cobblerd
+            cobbler sync
+            cobbler check
 
             # проверяем корректность настроек
-            cobbler check
             # должно быть:
             # No configuration problems found.  All systems go.
 
