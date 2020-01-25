@@ -47,8 +47,8 @@ Vagrant.configure(2) do |config|
 #            yum update -y
             yum makecache
             yum install -y cobbler cobbler-web dnsmasq syslinux pykickstart xinetd httpd dhcp debmirror pykickstart bind wget
-            systemctl enable --now cobblerd
             systemctl enable --now httpd
+            systemctl enable --now cobblerd
             systemctl enable --now xinetd
             systemctl enable --now rsyncd
             cp /vagrant/conf/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf
@@ -71,9 +71,14 @@ Vagrant.configure(2) do |config|
             systemctl restart cobblerd
             cobbler sync
             cobbler check
+        SHELL
+        
+        config.vm.provision :reload
+
+        box.vm.provision "shell", inline: <<-SHELL
 
             # проверяем корректность настроек
-            # cobbler check
+            cobbler check
             # должно быть:
             # No configuration problems found.  All systems go.
 
@@ -82,14 +87,13 @@ Vagrant.configure(2) do |config|
             mkdir /mnt/centos7 
             mount -t iso9660 -o loop,ro /vagrant/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos7
             cp /vagrant/kickstarts/* /var/lib/cobbler/kickstarts/
-#            cobbler import --arch=x86_64 --path=/mnt/centos7 --name=CentOS7
-#            cobbler profile edit --name=CentOS7-x86_64 --kickstart=/var/lib/cobbler/kickstarts/CentOS7.ks
+            cobbler import --arch=x86_64 --path=/mnt/centos7 --name=CentOS7
+            cobbler profile edit --name=CentOS7-x86_64 --kickstart=/var/lib/cobbler/kickstarts/CentOS7.ks
 #            mkdir /mnt/centos8
 #            wget http://mirror.logol.ru/centos/8.1.1911/isos/x86_64/CentOS-8.1.1911-x86_64-boot.iso
 #            mount -t iso9660 -o loop,ro /tmp/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos8
-            
 #            cobbler profile edit --name=CentOS7-x86_64 
-#            cobbler sync
+            cobbler sync
 
 
             SHELL
