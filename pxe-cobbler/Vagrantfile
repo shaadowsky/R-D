@@ -73,9 +73,6 @@ Vagrant.configure(2) do |config|
         config.vm.provision :reload
 
         box.vm.provision "shell", inline: <<-SHELL
-            systemctl restart cobblerd
-            cobbler sync
-            cobbler check
 
             # проверяем корректность настроек
             # должно быть:
@@ -92,7 +89,10 @@ Vagrant.configure(2) do |config|
 #            wget http://mirror.logol.ru/centos/8.1.1911/isos/x86_64/CentOS-8.1.1911-x86_64-boot.iso
 #            mount -t iso9660 -o loop,ro /tmp/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos8
 #            cobbler profile edit --name=CentOS7-x86_64 
+            cobbler get-loaders
+            systemctl restart cobblerd
             cobbler sync
+            cobbler check
 
 
             SHELL
