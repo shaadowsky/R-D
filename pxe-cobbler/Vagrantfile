@@ -9,7 +9,7 @@ MACHINES = {
         :box_name => "centos/7",
         :box_version => "1905.1",
         :box_check_update => "false",
-        :ip_addr => '192.168.20.10'
+        :ip_addr => '192.168.1.5'
         },
     }
 
@@ -33,28 +33,27 @@ Vagrant.configure(2) do |config|
             mkdir -p ~root/.ssh
             cp ~vagrant/.ssh/auth* ~root/.ssh
             sed -i 's/PasswordAuthentication no/PasswordAuthentication yes/g' /etc/ssh/sshd_config
-            sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+            cp /vagrant/conf/selinux/config /etc/selinux/config
+#            sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
+            sed -i "s/LANG=en_US.UTF-8/LANG=en_US.UTF-8 selinux=0/" /boot/grub2/grub.cfg
+            grub2-mkconfig -o /boot/grub2/grub.cfg 
             setenforce 0
-#            reboot now
-#            SHELL
-#        end
-
-#        config.vm.provision :reload
-
-#        config.vm.provision "shell", inline: <<-SHELL
-#            setenfoce 0 
             yum install -y epel-release
-#            yum update -y
             yum makecache
+<<<<<<< HEAD
             yum install -y cobbler cobbler-web dnsmasq syslinux pykickstart xinetd httpd dhcp debmirror pykickstart bind wget
+=======
+            yum install -y cobbler cobbler-web dnsmasq syslinux pykickstart xinetd httpd dhcp debmirror pykickstart bind wget nano
+            systemctl enable --now cobblerd
+>>>>>>> switch to another working flow
             systemctl enable --now httpd
             systemctl enable --now cobblerd
             systemctl enable --now xinetd
             systemctl enable --now rsyncd
             cp /vagrant/conf/dhcp/dhcpd.conf /etc/dhcp/dhcpd.conf
             systemctl enable --now dhcpd
-#            systemctl enable --now firewalld.service
             systemctl enable --now tftp.service
+#            systemctl enable --now firewalld.service
 #            firewall-cmd --add-port=80/tcp --permanent
 #            firewall-cmd --add-port=443/tcp --permanent
 #            firewall-cmd --add-service=dhcp --permanent
@@ -62,6 +61,16 @@ Vagrant.configure(2) do |config|
 #            firewall-cmd --add-port=69/udp --permanent
 #            firewall-cmd --add-port=4011/udp --permanent
 #            firewall-cmd --reload
+
+            SHELL
+        end
+
+        config.vm.provision :reload
+
+        config.vm.provision "shell", inline: <<-SHELL
+            setenfoce 0 
+            sestatus
+
             cp /etc/cobbler/settings{,.orig} 
             cp /vagrant/conf/cobbler/* /etc/cobbler/
             cobbler get-loaders
@@ -100,6 +109,6 @@ Vagrant.configure(2) do |config|
         end
     end
 
-end
+#end
 
 #end
