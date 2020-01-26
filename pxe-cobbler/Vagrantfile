@@ -37,15 +37,11 @@ Vagrant.configure(2) do |config|
 #            sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/selinux/config
             sed -i "s/LANG=en_US.UTF-8/LANG=en_US.UTF-8 selinux=0/" /boot/grub2/grub.cfg
             grub2-mkconfig -o /boot/grub2/grub.cfg 
-            setenforce 0
-            yum install -y epel-release
+#            setenforce 0
+            yum install -y epel-release nano tcpdump
             yum makecache
-<<<<<<< HEAD
-            yum install -y cobbler cobbler-web dnsmasq syslinux pykickstart xinetd httpd dhcp debmirror pykickstart bind wget
-=======
             yum install -y cobbler cobbler-web dnsmasq syslinux pykickstart xinetd httpd dhcp debmirror pykickstart bind wget nano
             systemctl enable --now cobblerd
->>>>>>> switch to another working flow
             systemctl enable --now httpd
             systemctl enable --now cobblerd
             systemctl enable --now xinetd
@@ -61,13 +57,6 @@ Vagrant.configure(2) do |config|
 #            firewall-cmd --add-port=69/udp --permanent
 #            firewall-cmd --add-port=4011/udp --permanent
 #            firewall-cmd --reload
-
-            SHELL
-        end
-
-        config.vm.provision :reload
-
-        config.vm.provision "shell", inline: <<-SHELL
             setenfoce 0 
             sestatus
 
@@ -77,11 +66,6 @@ Vagrant.configure(2) do |config|
             sed -i "s/^@dists/#@dists/" /etc/debmirror.conf
             sed -i "s/^@arches/#@arches/" /etc/debmirror.conf
             yum install -y fence-agents 
-        SHELL
-        
-        config.vm.provision :reload
-
-        box.vm.provision "shell", inline: <<-SHELL
 
             # проверяем корректность настроек
             # должно быть:
@@ -89,15 +73,12 @@ Vagrant.configure(2) do |config|
 
             ### подтягиваем ОС
 #            wget https://mirror.yandex.ru/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+
             mkdir /mnt/centos7 
             mount -t iso9660 -o loop,ro /vagrant/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos7
             cp /vagrant/kickstarts/* /var/lib/cobbler/kickstarts/
             cobbler import --arch=x86_64 --path=/mnt/centos7 --name=CentOS7
             cobbler profile edit --name=CentOS7-x86_64 --kickstart=/var/lib/cobbler/kickstarts/CentOS7.ks
-#            mkdir /mnt/centos8
-#            wget http://mirror.logol.ru/centos/8.1.1911/isos/x86_64/CentOS-8.1.1911-x86_64-boot.iso
-#            mount -t iso9660 -o loop,ro /tmp/CentOS-7-x86_64-Minimal-1908.iso /mnt/centos8
-#            cobbler profile edit --name=CentOS7-x86_64 
             cobbler get-loaders
             systemctl restart cobblerd
             cobbler sync
@@ -109,6 +90,6 @@ Vagrant.configure(2) do |config|
         end
     end
 
-#end
+end
 
 #end

@@ -2,7 +2,19 @@
 
 требуется подложить в корневую директорию, рядом с Vagrantfile образ центос 7
 
-    # wget https://mirror.yandex.ru/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+        # wget https://mirror.yandex.ru/centos/7.7.1908/isos/x86_64/CentOS-7-x86_64-Minimal-1908.iso
+
+после разворачивания стенда
+
+    # vagrant reload cobbler
+    # vagrant ssh cobbler
+    cobbler# systemctl restart tftp
+    cobbler# systemctl restart network
+    cobbler# systemctl restart dhcpd
+
+Один фиг не виртуалка не принимает назначемый ip. При предварительном тестировании получала. Возможно связано с тем, что я обновил вагрант 2.1.5 --> 2.2.6
+
+
 
 при создании вручную кикстарт-файлов нужно пользоваться ksvalidator
     

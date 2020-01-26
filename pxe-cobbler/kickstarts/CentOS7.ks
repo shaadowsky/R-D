@@ -3,12 +3,12 @@ firewall --disabled
 # Режим, установка или обновление
 install
 # Путь к образу установки
-url --url="http://192.168.20.10/cblr/links/CentOS7-x86_64/"# cobbler
+url --url="http://192.168.1.5/cblr/links/CentOS7-x86_64/"# cobbler
 # Пароль root
 rootpw --iscrypted $1$tGzwsFH9$35gG/LKDF5Ckn75B0xQDC.
 
 # Настройка сети
-network --bootproto=dhcp --device=eth0 --onboot=on
+network --bootproto=dhcp --device=eth1 --onboot=on
 
 # Перезагрузка после установки
 reboot
