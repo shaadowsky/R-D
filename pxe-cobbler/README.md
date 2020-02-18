@@ -12,7 +12,6 @@
     cobbler# systemctl restart network
     cobbler# systemctl restart dhcpd
 
-Один фиг не виртуалка не принимает назначемый ip. При предварительном тестировании получала. Возможно связано с тем, что я обновил вагрант 2.1.5 --> 2.2.6
 
 
 
@@ -28,7 +27,7 @@
 
 pxe-сервер доступен тут (_login cobbler, pass cobbler_):
 
-    https://192.168.20.10/cobbler_web/
+    https://192.168.1.5/cobbler_web/
     
 
 в продакшн случае нужно закрыть возможность обращаться в браузере куда-либо, кроме  cobbler_web, настроить selinux, 
